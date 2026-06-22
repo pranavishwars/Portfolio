@@ -1,0 +1,31 @@
+PLANET TEXTURES
+================
+
+Current implementation: Procedurally generated via canvas (no external assets required).
+All 6 planets are created at runtime using JavaScript procedural noise/texture generation.
+No internet textures were fetched.
+
+If you want to replace these with high-resolution external textures, download 
+equirectangular (spherical) planet maps and place them in this folder.
+
+Expected files (2048x1024 JPG/PNG recommended):
+  - planet_home.jpg     (Earth-like: blue/green/brown continents)
+  - planet_projects.jpg (Gas giant: orange/tan/cream bands)
+  - planet_skills.jpg   (Ice planet: blue/white frost)
+  - planet_experience.jpg (Lava planet: dark red/orange cracks)
+  - planet_contact.jpg  (Water world: deep blue swirls)
+  - planet_about.jpg    (Desert planet: tan/brown craters)
+
+Free texture sources (public domain / CC0):
+  - https://www.solarsystemscope.com/textures/
+  - https://www.solarsystemscope.com/textures/download/2k_earth_atmos_2048.jpg
+  - https://www.solarsystemscope.com/textures/download/2k_jupiter_2048.jpg
+  - https://www.solarsystemscope.com/textures/download/2k_neptune_2048.jpg
+  - https://www.solarsystemscope.com/textures/download/2k_mars_2048.jpg
+  - https://www.solarsystemscope.com/textures/download/2k_venus_atmosphere_2048.jpg
+  - https://www.solarsystemscope.com/textures/download/2k_mercury_2048.jpg
+
+To use downloaded textures instead of procedural generation, replace the
+generatePlanetTexture() call in js/main.js with:
+  const loader = new THREE.TextureLoader();
+  const tex = loader.load('assets/planet_home.jpg');

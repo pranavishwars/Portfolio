@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The journey — battles fought, lessons learned.">
+  <title>Experience | Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html#hero" class="nav-logo"><span>P</span>ortfolio</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#hero">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#blog">Blog</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="index.html#resume">Resume</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>The Journey</h1>
+      <p>Each role a battlefield, each project a scar earned with honor.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 <span id="footerName">Pranav Ishwar</span>. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const p = getData().personal;
+      document.getElementById('footerName').textContent = `${p.firstName} ${p.lastName}`;
+
+      const items = getData().experience;
+      document.getElementById('timeline').innerHTML = items.map(e => `
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-date">${e.date}</div>
+          <h3>${e.title}</h3>
+          <h4>${e.company}</h4>
+          <p>${e.description}</p>
+        </div>`).join('');
+    });
+  </script>
+</body>
+</html>

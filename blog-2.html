@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Blog — Technical articles, tutorials, and engineering insights.">
+  <title>Blog | Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { overflow-y: auto; background: var(--bg-alt); }
+    .page-header { padding: 120px 24px 60px; text-align: center; border-bottom: 1px solid var(--border-light); background: var(--bg); }
+    .page-header h1 { font-family: var(--font-display); font-size: 2.2rem; color: var(--text); margin-bottom: 12px; }
+    .page-header p { color: var(--text-muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+    .blog-section { padding: 60px 24px; max-width: 1000px; margin: 0 auto; }
+    .blog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .blog-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); overflow: hidden; transition: all var(--transition); display: flex; flex-direction: column; }
+    .blog-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+    .blog-card-image { padding: 40px; background: rgba(255,255,255,0.01); border-bottom: 1px solid var(--border-light); text-align: center; font-size: 3.5rem; }
+    .blog-card-body { padding: 28px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .blog-meta { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+    .blog-card-body h3 { font-family: var(--font-display); font-size: 1.25rem; color: var(--text); line-height: 1.4; }
+    .blog-card-body p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; flex: 1; }
+    .read-link { font-size: 0.8rem; color: var(--gold); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; transition: color var(--transition); }
+    .read-link:hover { color: var(--text); }
+    @media(max-width: 768px) { .blog-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><span>P</span>ortfolio</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>Blog</h1>
+      <p>Technical articles, tutorials, and insights from my development journey.</p>
+    </div>
+  </header>
+
+  <section class="blog-section">
+    <div class="blog-grid" id="blogGrid"></div>
+  </section>
+
+  <script src="js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof getData !== 'function') return;
+      const posts = getData().blog;
+      const grid = document.getElementById('blogGrid');
+
+      if (!posts || posts.length === 0) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><p>No blog posts yet.</p></div>';
+        return;
+      }
+
+      grid.innerHTML = posts.map(b => `
+        <article class="blog-card">
+          <div class="blog-card-image">${escapeHtml(b.icon || '📝')}</div>
+          <div class="blog-card-body">
+            <div class="blog-meta">${escapeHtml(b.date)} · ${escapeHtml(b.readTime)}</div>
+            <h3>${escapeHtml(b.title)}</h3>
+            <p>${escapeHtml(b.description)}</p>
+            <div><a href="#" class="read-link">Read More →</a></div>
+          </div>
+        </article>
+      `).join('');
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>
