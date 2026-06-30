@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive 3D portfolio built with Three.js">
+  <title>Pranav Ishwar S</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .hud-hint {
+      position: fixed;
+      bottom: 96px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13,13,20,0.82);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 6px;
+      padding: 10px 22px;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.38);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      pointer-events: none;
+      z-index: 10;
+      white-space: nowrap;
+      transition: opacity 0.5s ease;
+    }
+    .hud-hint span { color: rgba(68,136,255,0.7); }
+    .hud-room-label {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.4s ease;
+    }
+    .hud-room-label-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      color: rgba(68,136,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 6px;
+    }
+    .hud-enter-prompt {
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.18);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .crosshair {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10;
+      width: 24px;
+      height: 24px;
+    }
+    .crosshair::before, .crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(68,136,255,0.35);
+      border-radius: 1px;
+    }
+    .crosshair::before { width: 1px; height: 100%; top: 0; left: 50%; }
+    .crosshair::after  { width: 100%; height: 1px; top: 50%; left: 0; }
+    .compass-ring {
+      position: fixed;
+      bottom: 48px;
+      right: 44px;
+      width: 56px;
+      height: 56px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .compass-ring svg { width: 100%; height: 100%; }
+    #navArrows {
+      position: fixed;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .nav-arrow-btn {
+      background: rgba(13,13,20,0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.5);
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      pointer-events: auto;
+    }
+    .nav-arrow-btn:hover {
+      border-color: rgba(68,136,255,0.5);
+      color: rgba(68,136,255,0.9);
+      background: rgba(68,136,255,0.07);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="mainNavbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo" id="page-title"><span>P</span>ortfolio</a>
+      <ul class="nav-links" id="navLinksMain">
+        <li><a href="#" data-landing-nav="1">Home</a></li>
+        <li><a href="#" data-room-nav="home">Services</a></li>
+        <li><a href="#" data-room-nav="about">About</a></li>
+        <li><a href="#" data-room-nav="projects">Projects</a></li>
+        <li><a href="#" data-room-nav="skills">Skills</a></li>
+        <li><a href="#" data-room-nav="experience">Experience</a></li>
+        <li><a href="#" data-room-nav="contact">Contact</a></li>
+        <li><a href="#" data-room-nav="home" style="background:var(--gold);color:var(--bg);padding:8px 18px;border-radius:var(--radius-sm);font-weight:700;">Hire</a></li>
+      </ul>
+      <button class="nav-hamburger" id="navHamburgerMain" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div id="webgl-viewport-container"></div>
+
+  <!-- LANDING PAGE OVERLAY -->
+  <div id="landingOverlay">
+    <div id="landingBg">
+      <canvas id="landingCanvas"></canvas>
+    </div>
+    <div id="landingContent">
+      <div class="landing-photo-wrap">
+        <div class="landing-photo-ring"></div>
+        <img id="landingPhoto" class="landing-photo" src="assets/pfp.jpg" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="landing-text">
+        <div id="landingGreeting" class="landing-greeting">Welcome to</div>
+        <h1 id="landingName" class="landing-name">Portfolio</h1>
+        <div id="landingTitle" class="landing-title"></div>
+        <div id="landingStats" class="landing-stats"></div>
+        <div id="landingPrompt" class="landing-prompt">
+          <span class="prompt-arrow"><i class="fa-solid fa-play"></i></span>
+          <span class="prompt-text">Press Space to explore</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="crosshair"></div>
+
+  <div class="hud-room-label" id="hudRoomLabel">
+    <div class="hud-room-label-name" id="hudRoomName">Home</div>
+    <div class="hud-enter-prompt">Click to enter · Press Space</div>
+  </div>
+
+  <div class="hud-hint">
+    <span>←→↑↓</span> Rotate World &nbsp;·&nbsp; <span>Click / Space</span> Enter Room &nbsp;·&nbsp; <span>Space</span> Exit Room
+  </div>
+
+  <div class="hud-layer">
+    <div class="scroll-progress-container hud-interactive">
+      <div class="section-dots">
+        <span class="section-dot active" title="Home"></span>
+        <span class="section-dot" title="Projects"></span>
+        <span class="section-dot" title="Skills"></span>
+        <span class="section-dot" title="Experience"></span>
+        <span class="section-dot" title="Contact"></span>
+        <span class="section-dot" title="About"></span>
+      </div>
+      <div class="scroll-progress-rail">
+        <div class="scroll-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="navArrows" class="hud-interactive">
+    <button class="nav-arrow-btn" onclick="if(!window._roomOpen) document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}))"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="nav-arrow-btn" onclick="if(!window._roomOpen) document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}))"><i class="fa-solid fa-chevron-up"></i></button>
+    <button class="nav-arrow-btn" onclick="if(!window._roomOpen) document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}))"><i class="fa-solid fa-chevron-down"></i></button>
+    <button class="nav-arrow-btn" onclick="if(!window._roomOpen) document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}))"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+
+  <div class="compass-ring">
+    <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="28" cy="28" r="26" stroke="rgba(68,136,255,0.18)" stroke-width="1"/>
+      <circle cx="28" cy="28" r="20" stroke="rgba(68,136,255,0.08)" stroke-width="1" stroke-dasharray="3 4"/>
+      <text x="28" y="9" text-anchor="middle" fill="rgba(68,136,255,0.55)" font-size="7" font-family="Inter">N</text>
+      <text x="28" y="52" text-anchor="middle" fill="rgba(68,136,255,0.3)" font-size="6" font-family="Inter">S</text>
+      <text x="4" y="31" text-anchor="middle" fill="rgba(68,136,255,0.3)" font-size="6" font-family="Inter">W</text>
+      <text x="52" y="31" text-anchor="middle" fill="rgba(68,136,255,0.3)" font-size="6" font-family="Inter">E</text>
+      <circle cx="28" cy="28" r="2" fill="rgba(68,136,255,0.6)"/>
+    </svg>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function showModal(html) {
+      const o = document.getElementById('modalOverlay');
+      const c = document.getElementById('modalContent');
+      if (o && c) { c.innerHTML = html; o.classList.add('open'); }
+    }
+    function closeModal() {
+      const o = document.getElementById('modalOverlay');
+      if (o) o.classList.remove('open');
+    }
+
+    const ROOM_NAMES = [
+      'Services', 'Projects', 'Skills',
+      'Experience', 'Contact', 'About'
+    ];
+
+    setInterval(() => {
+      if (!window.viewportEngine) return;
+      const label = document.getElementById('hudRoomName');
+      const labelWrap = document.getElementById('hudRoomLabel');
+      if (!label) return;
+      if (window.innerWidth <= 768) { labelWrap.style.display = 'none'; return; }
+      const o = document.getElementById('room-overlay');
+      if (o) {
+        labelWrap.style.opacity = '0';
+        labelWrap.style.display = '';
+        window._roomOpen = true;
+      } else {
+        window._roomOpen = false;
+        labelWrap.style.opacity = '1';
+        labelWrap.style.display = '';
+        const idx = window._currentRoomIdx || 0;
+        label.textContent = ROOM_NAMES[idx] || ROOM_NAMES[0];
+      }
+    }, 300);
+
+    document.querySelectorAll('[data-room-nav]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const section = link.getAttribute('data-room-nav');
+        if (window.viewportEngine && window.viewportEngine.navigateToSection) {
+          window.viewportEngine.navigateToSection(section);
+        }
+        document.getElementById('navLinksMain')?.classList.remove('open');
+        document.getElementById('navHamburgerMain')?.classList.remove('open');
+      });
+    });
+
+    document.querySelectorAll('[data-landing-nav]').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('navLinksMain')?.classList.remove('open');
+        document.getElementById('navHamburgerMain')?.classList.remove('open');
+        const tryReturn = () => {
+          if (!window.viewportEngine) return;
+          if (window._roomOpen) { window.viewportEngine.exitRoom(); requestAnimationFrame(tryReturn); return; }
+          if (window.viewportEngine.returnToLanding) window.viewportEngine.returnToLanding();
+        };
+        requestAnimationFrame(tryReturn);
+      });
+    });
+
+    const hamburgerMain = document.getElementById('navHamburgerMain');
+    if (hamburgerMain) {
+      hamburgerMain.addEventListener('click', () => {
+        hamburgerMain.classList.toggle('open');
+        document.getElementById('navLinksMain')?.classList.toggle('open');
+      });
+    }
+  </script>
+</body>
+</html>

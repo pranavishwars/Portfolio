@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About — Background, experience, and development philosophy.">
+  <title>About | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { overflow-y: auto; background: var(--bg-alt); }
+    .page-header { padding: 120px 24px 60px; text-align: center; border-bottom: 1px solid var(--border-light); background: var(--bg); }
+    .page-header h1 { font-family: var(--font-display); font-size: 2.2rem; color: var(--text); margin-bottom: 12px; }
+    .page-header p { color: var(--text-muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+    .about-section { padding: 60px 24px; max-width: 1100px; margin: 0 auto; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: start; margin-bottom: 60px; }
+    .about-visual { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 40px; text-align: center; font-size: 4rem; box-shadow: var(--card-shadow); }
+    .about-text { display: flex; flex-direction: column; gap: 16px; }
+    .about-text h3 { font-family: var(--font-display); font-size: 1.5rem; color: var(--gold); }
+    .about-text p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.7; }
+    .about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; border-top: 1px solid var(--border-light); padding-top: 24px; }
+    .stat-card { text-align: center; background: rgba(255,255,255,0.01); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 16px; }
+    .stat-val { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--text); }
+    .stat-lbl { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-top: 4px; }
+    .principles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+    .principle-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 24px; text-align: center; }
+    .principle-card .icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .principle-card h4 { font-family: var(--font-display); font-size: 1.05rem; color: var(--text); margin-bottom: 8px; }
+    .principle-card p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.6; }
+    .extra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 60px; }
+    .extra-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 28px; }
+    .extra-card h3 { font-family: var(--font-display); font-size: 1.2rem; color: var(--gold); margin-bottom: 18px; }
+    .edu-item { padding: 14px 0; border-bottom: 1px solid var(--border-light); }
+    .edu-item:last-child { border-bottom: none; }
+    .edu-item h4 { font-size: 0.95rem; color: var(--text); margin-bottom: 3px; }
+    .edu-item .edu-sub { font-size: 0.82rem; color: var(--text-muted); }
+    .edu-item .edu-date { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
+    .hobby-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hobby-pill { background: rgba(68,136,255,0.08); border: 1px solid var(--border-light); color: var(--text); font-size: 0.85rem; padding: 8px 16px; border-radius: 999px; }
+    @media(max-width: 900px) { .about-grid, .principles-grid, .extra-grid { grid-template-columns: 1fr; } .about-stats { grid-template-columns: 1fr; } }
+    @media(max-width: 600px) {
+      .page-header { padding: 100px 16px 40px; }
+      .page-header h1 { font-size: 1.7rem; }
+      .about-section { padding: 36px 16px; }
+      .about-grid { gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><span>P</span>ortfolio</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="hire.html" style="background:var(--gold);color:var(--bg);padding:8px 18px;border-radius:var(--radius-sm);font-weight:700;">Hire</a></li>
+        </ul>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>About Me</h1>
+      <p>A brief overview of my background, experience, and development philosophy.</p>
+    </div>
+  </header>
+
+  <section class="about-section">
+    <div class="about-grid">
+      <div class="about-visual"><i class="fa-solid fa-cubes"></i></div>
+      <div class="about-text">
+        <h3 id="aboutTitle">Loading...</h3>
+        <div id="aboutParagraphs" style="display:grid; gap:12px;"></div>
+        <div class="about-stats" id="aboutStats"></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 60px;">
+      <span class="section-label" style="display:block; text-align:center;">Development Philosophy</span>
+      <h2 style="font-family: var(--font-display); font-size: 1.8rem; text-align:center; color: var(--text);">Core Principles</h2>
+      <div class="principles-grid">
+        <div class="principle-card">
+          <span class="icon"><i class="fa-solid fa-crosshairs"></i></span>
+          <h4>Purposeful Design</h4>
+          <p>Every feature and component serves a deliberate purpose. No unnecessary complexity, no wasted effort.</p>
+        </div>
+        <div class="principle-card">
+          <span class="icon"><i class="fa-solid fa-code"></i></span>
+          <h4>Clean Code</h4>
+          <p>Readable, maintainable code is non-negotiable. Every codebase should be better than when you found it.</p>
+        </div>
+        <div class="principle-card">
+          <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
+          <h4>Continuous Growth</h4>
+          <p>Architectures must evolve gracefully with emerging technologies and changing requirements.</p>
+        </div>
+      </div>
+    </div>
+    <div class="extra-grid">
+      <div class="extra-card">
+        <h3><i class="fa-solid fa-graduation-cap"></i> Education</h3>
+        <div id="aboutEducation"></div>
+      </div>
+      <div class="extra-card">
+        <h3><i class="fa-solid fa-puzzle-piece"></i> Hobbies & Interests</h3>
+        <div class="hobby-pills" id="aboutHobbies"></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof getData !== 'function') return;
+      const p = getData().personal;
+
+      document.getElementById('aboutTitle').textContent = p.aboutTitle;
+      
+      document.getElementById('aboutParagraphs').innerHTML = p.aboutParagraphs.map(text => 
+        `<p>${escapeHtml(text)}</p>`
+      ).join('');
+
+      document.getElementById('aboutStats').innerHTML = p.stats.map(s => `
+        <div class="stat-card">
+          <div class="stat-val">${escapeHtml(s.number)}</div>
+          <div class="stat-lbl">${escapeHtml(s.label)}</div>
+        </div>
+      `).join('');
+
+      const edu = p.education || [];
+      document.getElementById('aboutEducation').innerHTML = edu.length ? edu.map(e => `
+        <div class="edu-item">
+          <h4>${escapeHtml(e.degree)}</h4>
+          <div class="edu-sub">${escapeHtml(e.school)}</div>
+          <div class="edu-date">${escapeHtml(e.date)}</div>
+        </div>
+      `).join('') : '<p style="color:var(--text-dim);font-size:0.85rem;">No education entries yet.</p>';
+
+      const hobbies = p.hobbies || [];
+      document.getElementById('aboutHobbies').innerHTML = hobbies.length ? hobbies.map(h =>
+        `<span class="hobby-pill">${escapeHtml(h)}</span>`
+      ).join('') : '<p style="color:var(--text-dim);font-size:0.85rem;">No hobbies listed yet.</p>';
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    const navHamburger = document.getElementById('navHamburger');
+    if (navHamburger) {
+      navHamburger.addEventListener('click', () => {
+        navHamburger.classList.toggle('open');
+        document.getElementById('navLinks')?.classList.toggle('open');
+      });
+    }
+  </script>
+</body>
+</html>

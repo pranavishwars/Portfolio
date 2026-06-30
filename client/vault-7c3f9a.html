@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control Panel | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0c0a1a; color: #eeeef8; font-family: system-ui, sans-serif; min-height: 100vh; }
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: #080612; border-bottom: 1px solid rgba(68,136,255,0.15); position: sticky; top: 0; z-index: 100; }
+    .navbar a { color: #9090b8; text-decoration: none; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; }
+    .navbar a:hover { color: #eeeef8; }
+    .nav-logo { font-family: serif; font-size: 1.1rem; font-weight: 700; color: #eeeef8; letter-spacing: 2px; }
+    .nav-logo span { color: #4488ff; }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .admin-layout { display: flex; min-height: calc(100vh - 60px); }
+    .admin-sidebar { width: 220px; background: #080612; border-right: 1px solid rgba(68,136,255,0.1); padding: 32px 16px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    .admin-sidebar a { color: #9090b8; text-decoration: none; font-size: 0.78rem; padding: 11px 14px; border-radius: 4px; display: flex; align-items: center; gap: 10px; }
+    .admin-sidebar a:hover, .admin-sidebar a.active { color: #eeeef8; background: rgba(255,255,255,0.03); }
+    .admin-sidebar a.active { border-left: 2px solid #4488ff; color: #4488ff; }
+    .admin-content { flex: 1; padding: 40px; max-width: 920px; }
+    .section-nav { display: none; flex-direction: column; gap: 24px; }
+    .section-nav.active { display: flex; }
+    .admin-card { background: #101024; border: 1px solid rgba(68,136,255,0.1); border-radius: 8px; padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+    .admin-card h2 { font-family: serif; font-size: 1.2rem; color: #eeeef8; border-bottom: 1px solid rgba(68,136,255,0.1); padding-bottom: 10px; }
+    .admin-card .hint { color: #9090b8; font-size: 0.8rem; margin-top: -10px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: #9090b8; font-weight: 600; display: block; margin-bottom: 4px; }
+    .form-group input, .form-group textarea { background: rgba(255,255,255,0.02); border: 1px solid rgba(68,136,255,0.1); border-radius: 4px; padding: 9px 12px; color: #eeeef8; font-family: inherit; font-size: 0.85rem; width: 100%; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #4488ff; }
+    .form-actions { margin-top: 4px; }
+    .btn { cursor: pointer; padding: 8px 16px; border-radius: 4px; font-size: 0.78rem; font-weight: 500; border: 1px solid transparent; }
+    .btn-primary { background: rgba(68,136,255,0.2); border-color: rgba(68,136,255,0.3); color: #eeeef8; }
+    .btn-primary:hover { background: rgba(68,136,255,0.3); }
+    .btn-secondary { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); color: #eeeef8; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.06); }
+    .btn-sm { padding: 6px 12px; font-size: 0.72rem; }
+    .item-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(68,136,255,0.1); border-radius: 4px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .item-card h4 { font-size: 0.88rem; font-weight: 500; color: #eeeef8; }
+    .item-card .sub { font-size: 0.74rem; color: #9090b8; }
+    .item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .vault-zone { border: 2px dashed rgba(68,136,255,0.15); padding: 28px; text-align: center; border-radius: 8px; }
+    .star-input { display: inline-flex; gap: 4px; cursor: pointer; }
+    .star-input span { font-size: 1.3rem; color: rgba(255,255,255,0.15); }
+    .star-input span.on { color: #4488ff; }
+    .pill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { background: rgba(68,136,255,0.1); border: 1px solid rgba(68,136,255,0.1); color: #eeeef8; font-size: 0.78rem; padding: 6px 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px; }
+    .pill button { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.9rem; padding: 0; }
+    .empty-state { padding: 20px 0; color: #9090b8; font-size: 0.85rem; }
+    .inquiry-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(68,136,255,0.1); border-radius: 4px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+    .inquiry-card.unread { border-color: #4488ff; background: rgba(68,136,255,0.05); }
+    .inquiry-card .inq-header { display: flex; justify-content: space-between; align-items: center; }
+    .inquiry-card .inq-name { font-size: 0.88rem; font-weight: 600; color: #eeeef8; }
+    .inquiry-card .inq-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; background: #4488ff; color: #fff; text-transform: uppercase; }
+    .inquiry-card .inq-meta { font-size: 0.74rem; color: #9090b8; display: flex; gap: 16px; flex-wrap: wrap; }
+    .inquiry-card .inq-desc { font-size: 0.82rem; color: #c0c0d8; line-height: 1.5; margin-top: 4px; }
+    .inquiry-card .inq-actions { display: flex; gap: 8px; margin-top: 4px; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #101024; border: 1px solid rgba(68,136,255,0.1); border-radius: 8px; padding: 32px; width: 100%; max-width: 480px; max-height: 80vh; overflow-y: auto; }
+    #authGate { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at center, #0f0620 0%, #050309 100%); }
+    .auth-card { background: #101024; border: 1px solid rgba(68,136,255,0.1); border-radius: 8px; padding: 48px 40px; width: 100%; max-width: 380px; text-align: center; }
+    .auth-card h2 { font-family: serif; font-size: 1.3rem; color: #eeeef8; margin-bottom: 8px; }
+    .auth-card p { color: #9090b8; font-size: 0.85rem; margin-bottom: 24px; }
+    .auth-icon { font-size: 2.2rem; margin-bottom: 12px; }
+    #authForm { display: flex; flex-direction: column; gap: 14px; }
+    #authForm input { background: rgba(255,255,255,0.02); border: 1px solid rgba(68,136,255,0.1); border-radius: 4px; padding: 12px 16px; color: #eeeef8; font-family: inherit; font-size: 0.9rem; text-align: center; }
+    #authForm input:focus { outline: none; border-color: #4488ff; }
+    .auth-error { color: #ef4444; font-size: 0.78rem; margin-top: 14px; min-height: 1em; }
+    @media(max-width:900px) {
+      .admin-layout { flex-direction: column; }
+      .admin-sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 12px 16px; }
+      .admin-sidebar a.active { border-left: none; border-bottom: 2px solid #4488ff; }
+      .admin-content { padding: 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo"><span>P</span>ortfolio</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="hire.html" style="background:#4488ff;color:#080612;padding:8px 18px;border-radius:4px;font-weight:700;">Hire</a></li>
+      <li><a href="vault-7c3f9a.html" style="color:#eeeef8;">Control Panel</a></li>
+    </ul>
+  </nav>
+
+  <div class="admin-layout" id="adminLayout">
+    <aside class="admin-sidebar">
+      <a href="#" class="active" data-section="identity"><i class="fa-solid fa-user"></i> Profile</a>
+      <a href="#" data-section="services"><i class="fa-solid fa-concierge-bell"></i> Services</a>
+      <a href="#" data-section="spatial"><i class="fa-solid fa-cube"></i> Projects</a>
+      <a href="#" data-section="disciplines"><i class="fa-solid fa-bolt"></i> Skills</a>
+      <a href="#" data-section="experience"><i class="fa-solid fa-file-lines"></i> Experience</a>
+      <a href="#" data-section="aboutextra"><i class="fa-solid fa-graduation-cap"></i> About Extras</a>
+      <a href="#" data-section="vault"><i class="fa-solid fa-floppy-disk"></i> Data</a>
+      <a href="#" data-section="inquiries"><i class="fa-solid fa-inbox"></i> Inquiries</a>
+      <div style="flex:1"></div>
+      <a href="#" id="logoutLink" style="color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+    </aside>
+
+    <section class="admin-content">
+      <div class="section-nav active" id="section-identity">
+        <form class="admin-card" id="identityForm">
+          <h2>Profile</h2>
+          <div class="form-grid">
+            <div class="form-group"><label>First Name</label><input type="text" id="i-firstName" required></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="i-lastName" required></div>
+            <div class="form-group full-width"><label>Greeting</label><input type="text" id="i-greeting" required></div>
+            <div class="form-group full-width"><label>Subtitle</label><input type="text" id="i-subtitle" required></div>
+          </div>
+          <div class="form-actions"><button type="submit" class="btn btn-primary">Save Changes</button></div>
+        </form>
+        <form class="admin-card" id="statsForm">
+          <h2>Landing Stats</h2>
+          <p class="hint">Shown on the landing page and About room.</p>
+          <div class="form-grid">
+            <div class="form-group"><label>Stat 1 Number</label><input type="text" id="st-0-num" required></div>
+            <div class="form-group"><label>Stat 1 Label</label><input type="text" id="st-0-lbl" required></div>
+            <div class="form-group"><label>Stat 2 Number</label><input type="text" id="st-1-num" required></div>
+            <div class="form-group"><label>Stat 2 Label</label><input type="text" id="st-1-lbl" required></div>
+            <div class="form-group"><label>Stat 3 Number</label><input type="text" id="st-2-num" required></div>
+            <div class="form-group"><label>Stat 3 Label</label><input type="text" id="st-2-lbl" required></div>
+          </div>
+          <div class="form-actions"><button type="submit" class="btn btn-primary">Save Stats</button></div>
+        </form>
+        <form class="admin-card" id="commsForm">
+          <h2>Contact</h2>
+          <div class="form-grid">
+            <div class="form-group"><label>Email</label><input type="email" id="c-email" required></div>
+            <div class="form-group"><label>Location</label><input type="text" id="c-location" required></div>
+            <div class="form-group full-width"><label>Availability</label><input type="text" id="c-availability" required></div>
+          </div>
+          <div class="form-actions"><button type="submit" class="btn btn-primary">Save Contact</button></div>
+        </form>
+      </div>
+      <div class="section-nav" id="section-services">
+        <div class="admin-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>Services</h2>
+            <button type="button" class="btn btn-secondary" onclick="openServiceModal()"><i class="fa-solid fa-plus"></i> Add Service</button>
+          </div>
+          <p class="hint">Shown on the Home/Services room.</p>
+          <div style="display:grid;gap:12px;" id="services-target-container"></div>
+        </div>
+      </div>
+      <div class="section-nav" id="section-spatial">
+        <div class="admin-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>Projects</h2>
+            <button type="button" class="btn btn-secondary" onclick="openProjectAllocationModal()"><i class="fa-solid fa-plus"></i> Add Project</button>
+          </div>
+          <div style="display:grid;gap:12px;" id="projects-target-container"></div>
+        </div>
+      </div>
+      <div class="section-nav" id="section-disciplines">
+        <div class="admin-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>Skills</h2>
+            <button type="button" class="btn btn-secondary" onclick="openCategoryModal()"><i class="fa-solid fa-plus"></i> Add Category</button>
+          </div>
+          <p class="hint">Rated 1–5 stars.</p>
+          <div style="display:grid;gap:16px;" id="disciplines-target-container"></div>
+        </div>
+      </div>
+      <div class="section-nav" id="section-experience">
+        <div class="admin-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>Experience</h2>
+            <button type="button" class="btn btn-secondary" onclick="openExperienceModal()"><i class="fa-solid fa-plus"></i> Add Entry</button>
+          </div>
+          <div style="display:grid;gap:12px;" id="experience-target-container"></div>
+        </div>
+      </div>
+      <div class="section-nav" id="section-aboutextra">
+        <div class="admin-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>Education</h2>
+            <button type="button" class="btn btn-secondary" onclick="openEducationModal()"><i class="fa-solid fa-plus"></i> Add Entry</button>
+          </div>
+          <div style="display:grid;gap:12px;" id="education-target-container"></div>
+        </div>
+        <div class="admin-card">
+          <h2>Hobbies &amp; Interests</h2>
+          <p class="hint">Press Enter to add one.</p>
+          <input type="text" id="hobbyInput" placeholder="Type a hobby and press Enter">
+          <div class="pill-list" id="hobbies-target-container"></div>
+        </div>
+      </div>
+      <div class="section-nav" id="section-vault">
+        <div class="admin-card">
+          <h2>Data Management</h2>
+          <p class="hint">Export your portfolio data as JSON or import a backup.</p>
+          <div class="vault-zone">
+            <p style="font-size:0.9rem;margin-bottom:16px;font-weight:500;">Import / Export</p>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button type="button" class="btn btn-secondary" onclick="exportPortfolioData()"><i class="fa-solid fa-download"></i> Export JSON</button>
+              <button type="button" class="btn btn-primary" onclick="document.getElementById('vaultFileInput').click()"><i class="fa-solid fa-upload"></i> Import JSON</button>
+              <input type="file" id="vaultFileInput" accept=".json" style="display:none;" onchange="importPortfolioData(event)">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="section-nav" id="section-inquiries">
+        <div class="admin-card">
+          <h2>Hire Inquiries</h2>
+          <p class="hint">Job requests and project inquiries from the Hire page.</p>
+          <div style="display:grid;gap:12px;" id="inquiries-target-container"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <script src="js/data.js?v=5"></script>
+  <script src="js/admin-auth.js?v=5"></script>
+  <script>
+    initAdminGate(function() {
+      var s = document.createElement('script');
+      s.src = 'js/admin.js?v=5';
+      document.body.appendChild(s);
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      var logout = document.getElementById('logoutLink');
+      if (logout) logout.addEventListener('click', function(e) { e.preventDefault(); adminLogout(); });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Skills — weapons honed through discipline and practice.">
+  <title>Skills | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html#hero" class="nav-logo"><span>P</span>ortfolio</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#hero">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#projects">Projects</a></li>
+        <li><a href="index.html#skills">Skills</a></li>
+        <li><a href="index.html#experience">Experience</a></li>
+        <li><a href="index.html#blog">Blog</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="index.html#resume">Resume</a></li>
+        <li><a href="hire.html" style="background:var(--gold);color:var(--bg);padding:8px 18px;border-radius:var(--radius-sm);font-weight:700;">Hire</a></li>
+        </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fa-solid fa-sun"></i></button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>Disciplines</h1>
+      <p>Weapons forged through practice, each one a tool for the craft.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <div class="skills-grid" id="skillsGrid"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 <span id="footerName">Pranav Ishwar</span>. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const p = getData().personal;
+      document.getElementById('footerName').textContent = `${p.firstName} ${p.lastName}`;
+
+      const categories = getData().skills.categories;
+      document.getElementById('skillsGrid').innerHTML = categories.map(cat => `
+        <div class="skill-category scroll-reveal">
+          <h3>${cat.icon} ${cat.name}</h3>
+          ${cat.items.map(s => `
+            <div class="skill-item">
+              <div class="skill-info"><span>${s.name}</span><span>${s.level}%</span></div>
+              <div class="skill-bar"><div class="skill-bar-fill" style="width:${s.level}%"></div></div>
+            </div>`).join('')}
+        </div>`).join('');
+    });
+  </script>
+</body>
+</html>

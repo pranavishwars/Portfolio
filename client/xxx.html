@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin — Manage portfolio data and content.">
+  <title>Admin | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { overflow-y: auto; background: var(--bg-alt); }
+    .admin-layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; padding-top: 68px; }
+    .admin-sidebar { background: var(--bg); border-right: 1px solid var(--border-light); padding: 32px 24px; display: flex; flex-direction: column; gap: 8px; }
+    .admin-sidebar h3 { font-family: var(--font-display); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 16px; padding-left: 12px; }
+    .admin-sidebar a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 500; padding: 12px 16px; border-radius: var(--radius-sm); transition: all var(--transition); display: flex; align-items: center; gap: 12px; }
+    .admin-sidebar a:hover, .admin-sidebar a.active { color: var(--text); background: rgba(255,255,255,0.02); }
+    .admin-sidebar a.active { border-left: 2px solid var(--gold); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--gold); }
+    .admin-content { padding: 48px; max-width: 900px; width: 100%; }
+    .section-nav { display: none; }
+    .section-nav.active { display: flex; flex-direction: column; gap: 32px; animation: fadeIn 0.4s ease-out; }
+    .admin-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 32px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .admin-card h2 { font-family: var(--font-display); font-size: 1.3rem; color: var(--text); border-bottom: 1px solid var(--border-light); padding-bottom: 12px; margin-bottom: 8px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; }
+    .form-group input, .form-group textarea { background: rgba(255,255,255,0.01); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 10px 14px; color: var(--text); font-family: var(--font-body); font-size: 0.85rem; transition: all var(--transition); }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--gold); background: rgba(68, 136, 255, 0.02); }
+    .item-card { background: rgba(255,255,255,0.01); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: border var(--transition); }
+    .item-card:hover { border-color: var(--text-dim); }
+    .item-card h4 { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+    .item-card .sub { font-size: 0.75rem; color: var(--text-muted); }
+    .item-actions { display: flex; gap: 12px; }
+    .vault-zone { border: 2px dashed var(--border-light); padding: 32px; text-align: center; border-radius: var(--radius); background: rgba(255,255,255,0.005); transition: all var(--transition); }
+    .vault-zone:hover { border-color: var(--gold); background: rgba(68, 136, 255, 0.01); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media(max-width: 900px) { .admin-layout { grid-template-columns: 1fr; } .admin-sidebar { display: none; } .admin-content { padding: 24px; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><span>P</span>ortfolio</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="admin.html" class="active">Admin</a></li>
+        <li><a href="hire.html" style="background:var(--gold);color:var(--bg);padding:8px 18px;border-radius:var(--radius-sm);font-weight:700;">Hire</a></li>
+        </ul>
+    </div>
+  </nav>
+
+  <main class="admin-layout">
+    <aside class="admin-sidebar">
+      <h3>Sections</h3>
+      <a href="#" class="active" data-section="identity"><i class="fa-solid fa-user"></i> Profile</a>
+      <a href="#" data-section="spatial"><i class="fa-solid fa-cube"></i> Projects</a>
+      <a href="#" data-section="disciplines"><i class="fa-solid fa-bolt"></i> Skills</a>
+      <a href="#" data-section="experience"><i class="fa-solid fa-file-lines"></i> Experience</a>
+      <a href="#" data-section="vault"><i class="fa-solid fa-floppy-disk"></i> Data</a>
+    </aside>
+
+    <section class="admin-content">
+      
+      <div class="section-nav active" id="section-identity">
+        <form class="admin-card" id="identityForm">
+          <h2>Profile</h2>
+          <div class="form-grid">
+            <div class="form-group"><label for="i-firstName">First Name</label><input type="text" id="i-firstName" required></div>
+            <div class="form-group"><label for="i-lastName">Last Name</label><input type="text" id="i-lastName" required></div>
+            <div class="form-group full-width"><label for="i-greeting">Greeting</label><input type="text" id="i-greeting" required></div>
+            <div class="form-group full-width"><label for="i-subtitle">Subtitle</label><input type="text" id="i-subtitle" required></div>
+          </div>
+          <div class="form-actions"><button type="submit" class="btn btn-primary btn-sm">Save Changes</button></div>
+        </form>
+
+        <form class="admin-card" id="commsForm">
+          <h2>Contact</h2>
+          <div class="form-grid">
+            <div class="form-group"><label for="c-email">Email</label><input type="email" id="c-email" required></div>
+            <div class="form-group"><label for="c-location">Location</label><input type="text" id="c-location" required></div>
+            <div class="form-group full-width"><label for="c-availability">Availability</label><input type="text" id="c-availability" required></div>
+          </div>
+          <div class="form-actions"><button type="submit" class="btn btn-primary btn-sm">Save Contact</button></div>
+        </form>
+      </div>
+
+      <div class="section-nav" id="section-spatial">
+        <div class="admin-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Projects</h2>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openProjectAllocationModal()"><i class="fa-solid fa-plus"></i> Add Project</button>
+          </div>
+          <div style="display: grid; gap: 12px;" id="projects-target-container"></div>
+        </div>
+      </div>
+
+      <div class="section-nav" id="section-disciplines">
+        <div class="admin-card">
+          <h2>Skills</h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: -12px;">Manage skill categories and proficiency levels.</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;" id="disciplines-target-container"></div>
+        </div>
+      </div>
+
+      <div class="section-nav" id="section-experience">
+        <div class="admin-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Experience</h2>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openExperienceModal()"><i class="fa-solid fa-plus"></i> Add Entry</button>
+          </div>
+          <div style="display: grid; gap: 12px;" id="experience-target-container"></div>
+        </div>
+      </div>
+
+      <div class="section-nav" id="section-vault">
+        <div class="admin-card">
+          <h2>Data Management</h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: -12px;">Export your portfolio data as JSON or import an existing backup.</p>
+          <div class="vault-zone">
+            <p style="font-size: 0.9rem; color: var(--text); margin-bottom: 16px; font-weight: 500;">Import / Export</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="exportPortfolioData()"><i class="fa-solid fa-download"></i> Export JSON</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('vaultFileInput').click()"><i class="fa-solid fa-upload"></i> Import JSON</button>
+              <input type="file" id="vaultFileInput" accept=".json" style="display: none;" onchange="importPortfolioData(event)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

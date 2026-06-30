@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact — Get in touch for collaborations and opportunities.">
+  <title>Contact | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { overflow-y: auto; background: var(--bg-alt); }
+    .page-header { padding: 120px 24px 60px; text-align: center; border-bottom: 1px solid var(--border-light); background: var(--bg); }
+    .page-header h1 { font-family: var(--font-display); font-size: 2.2rem; color: var(--text); margin-bottom: 12px; }
+    .page-header p { color: var(--text-muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+    .contact-section { padding: 60px 24px; max-width: 1100px; margin: 0 auto; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; }
+    .contact-info { display: flex; flex-direction: column; gap: 32px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 32px; }
+    .contact-info h3 { font-family: var(--font-display); font-size: 1.4rem; color: var(--gold); }
+    .contact-info p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+    .contact-item { display: flex; gap: 16px; align-items: flex-start; }
+    .contact-icon { font-size: 1.5rem; color: var(--accent); line-height: 1; }
+    .contact-item h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+    .contact-item p { color: var(--text); font-size: 0.9rem; }
+    .contact-form { display: grid; gap: 20px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 32px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; }
+    .form-group input, .form-group textarea, .form-group select { background: rgba(255,255,255,0.02); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 12px 16px; color: var(--text); font-family: var(--font-body); font-size: 0.88rem; transition: all var(--transition); width: 100%; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--gold); background: rgba(68, 136, 255, 0.02); }
+    @media(max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><span>P</span>ortfolio</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+        <li><a href="hire.html" style="background:var(--gold);color:var(--bg);padding:8px 18px;border-radius:var(--radius-sm);font-weight:700;">Hire</a></li>
+        </ul>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>Contact</h1>
+      <p>Get in touch — I'm always open to new opportunities and collaborations.</p>
+    </div>
+  </header>
+
+  <section class="contact-section">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Contact Information</h3>
+        <p>Feel free to reach out through any of the channels below.</p>
+        
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <h4>Email</h4>
+            <p id="contactEmail">Loading...</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <h4>Location</h4>
+            <p id="contactLocation">Loading...</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div>
+            <h4>Availability</h4>
+            <p id="contactAvailability">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" required placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="your@domain.com">
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" rows="5" required placeholder="Your message..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <script src="js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof getData !== 'function') return;
+      const c = getData().contact;
+
+      document.getElementById('contactEmail').textContent = c.email;
+      document.getElementById('contactLocation').textContent = c.location;
+      document.getElementById('contactAvailability').textContent = c.availability;
+
+      const form = document.getElementById('contactForm');
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        alert('Message received! I will get back to you soon.');
+        form.reset();
+      });
+    });
+
+    const navHamburger = document.getElementById("navHamburger");
+    if (navHamburger) {
+      navHamburger.addEventListener("click", () => {
+        navHamburger.classList.toggle("open");
+        document.getElementById("navLinks")?.classList.toggle("open");
+      });
+    }
+  </script>
+</body>
+</html>

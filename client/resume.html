@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resume — Professional experience, education, and skills.">
+  <title>Resume | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { overflow-y: auto; background: var(--bg-alt); }
+    .page-header { padding: 120px 24px 60px; text-align: center; border-bottom: 1px solid var(--border-light); background: var(--bg); }
+    .page-header h1 { font-family: var(--font-display); font-size: 2.2rem; color: var(--text); margin-bottom: 12px; }
+    .page-header p { color: var(--text-muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto; }
+    .resume-section { padding: 60px 24px; max-width: 1000px; margin: 0 auto; }
+    .resume-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 48px; border-bottom: 1px solid var(--border-light); padding-bottom: 32px; flex-wrap: wrap; }
+    .resume-header h2 { font-family: var(--font-display); font-size: 2rem; color: var(--gold); }
+    .resume-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+    .resume-block-title { font-family: var(--font-display); font-size: 1.3rem; color: var(--text); margin-bottom: 20px; border-left: 3px solid var(--accent); padding-left: 12px; }
+    .resume-item { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; transition: border var(--transition); }
+    .resume-item:hover { border-color: var(--gold); }
+    .resume-item h4 { font-family: var(--font-display); font-size: 1.1rem; color: var(--text); margin-bottom: 4px; }
+    .resume-sub { font-size: 0.88rem; color: var(--gold); margin-bottom: 4px; font-weight: 500; }
+    .resume-date { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .resume-item p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><span>P</span>ortfolio</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="resume.html" class="active">Resume</a></li>
+        <li><a href="hire.html" style="background:var(--gold);color:var(--bg);padding:8px 18px;border-radius:var(--radius-sm);font-weight:700;">Hire</a></li>
+        </ul>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>Resume</h1>
+      <p>Professional experience, education, and technical skills.</p>
+    </div>
+  </header>
+
+  <section class="resume-section">
+    <div class="resume-header">
+      <div>
+        <h2 id="resumeName">Loading...</h2>
+        <p id="resumeTitle" style="color: var(--text-muted); margin-top: 4px;"></p>
+      </div>
+      <a href="#" class="btn btn-secondary btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</a>
+    </div>
+
+    <div class="resume-grid">
+      <div id="resumeExperienceSection"></div>
+      <div id="resumeEducationSection"></div>
+      <div id="resumeSkillsSection"></div>
+      <div id="resumeCertsSection"></div>
+    </div>
+  </section>
+
+  <script src="js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof getData !== 'function') return;
+      const d = getData();
+      const r = d.resume;
+
+      document.getElementById('resumeName').textContent = r.name;
+      document.getElementById('resumeTitle').textContent = r.title;
+
+      if (r.experience && r.experience.length > 0) {
+        document.getElementById('resumeExperienceSection').innerHTML = `
+          <h3 class="resume-block-title"><i class="fa-solid fa-briefcase"></i> Experience</h3>
+          ${r.experience.map(e => `
+            <div class="resume-item">
+              <h4>${escapeHtml(e.title)}</h4>
+              <div class="resume-sub">${escapeHtml(e.company)}</div>
+              <div class="resume-date">${escapeHtml(e.date)}</div>
+              <p>${escapeHtml(e.description)}</p>
+            </div>
+          `).join('')}`;
+      }
+
+      if (r.education && r.education.length > 0) {
+        document.getElementById('resumeEducationSection').innerHTML = `
+          <h3 class="resume-block-title"><i class="fa-solid fa-graduation-cap"></i> Education</h3>
+          ${r.education.map(e => `
+            <div class="resume-item">
+              <h4>${escapeHtml(e.degree)}</h4>
+              <div class="resume-sub">${escapeHtml(e.school)}</div>
+              <div class="resume-date">${escapeHtml(e.date)}</div>
+              <p>${escapeHtml(e.description)}</p>
+            </div>
+          `).join('')}`;
+      }
+
+      if (r.skillGroups && r.skillGroups.length > 0) {
+        document.getElementById('resumeSkillsSection').innerHTML = `
+          <h3 class="resume-block-title"><i class="fa-solid fa-wrench"></i> Skills</h3>
+          ${r.skillGroups.map(s => `
+            <div class="resume-item">
+              <h4>${escapeHtml(s.label)}</h4>
+              <p style="color: var(--gold); font-size: 0.85rem; margin-top: 4px;">${escapeHtml(s.items)}</p>
+            </div>
+          `).join('')}`;
+      }
+
+      if (r.certifications && r.certifications.length > 0) {
+        document.getElementById('resumeCertsSection').innerHTML = `
+          <h3 class="resume-block-title"><i class="fa-solid fa-certificate"></i> Certifications</h3>
+          ${r.certifications.map(c => `
+            <div class="resume-item">
+              <h4>${escapeHtml(c.name)}</h4>
+              ${c.issuer ? `<div class="resume-sub">${escapeHtml(c.issuer)}</div>` : ''}
+              <div class="resume-date">${escapeHtml(c.date)}</div>
+            </div>
+          `).join('')}`;
+      }
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    const navHamburger = document.getElementById("navHamburger");
+    if (navHamburger) {
+      navHamburger.addEventListener("click", () => {
+        navHamburger.classList.toggle("open");
+        document.getElementById("navLinks")?.classList.toggle("open");
+      });
+    }
+  </script>
+</body>
+</html>
