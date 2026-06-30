@@ -57,7 +57,7 @@ const DEFAULT_DATA = {
     categories: [
       {
         name: 'Core Technologies',
-        icon: '⚙️',
+        icon: '<i class="fa-solid fa-gear"></i>',
         items: [
           { name: 'JavaScript (ES6+) / WebGL', stars: 5 },
           { name: 'Three.js / 3D Graphics', stars: 5 },
@@ -66,7 +66,7 @@ const DEFAULT_DATA = {
       },
       {
         name: 'Engineering',
-        icon: '📐',
+        icon: '<i class="fa-solid fa-ruler-combined"></i>',
         items: [
           { name: 'Computational Geometry', stars: 4 },
           { name: 'State Management', stars: 5 },
