@@ -148,6 +148,9 @@
       `).join('');
     }
 
+    if (window.innerWidth <= 768) {
+      tl.add(function () { setTimeout(dismissLanding, 4000); });
+    }
     armLandingDismissKey();
     document.querySelector('.landing-prompt')?.addEventListener('click', dismissLanding);
   }
@@ -1158,6 +1161,7 @@
       @keyframes bgDrift { from { transform:scale(1.06) translate(0,0); } to { transform:scale(1.13) translate(-2%,-2%); } }
       @keyframes cardSlideUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
       @keyframes navDropIn { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
+      @media(max-width:768px){.room-overlay-body{padding:24px 16px!important;min-height:calc(100dvh - 68px);}.room-overlay-nav{padding:14px 16px!important;}.exit-btn span{display:none!important;}}
       .room-card { position:relative;z-index:2;background:rgba(8,6,18,0.6); border:1px solid rgba(${rgb},0.16); border-radius:8px; padding:24px 28px; animation:cardSlideUp 0.45s cubic-bezier(0.25,0.8,0.25,1) both; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 12px 30px rgba(0,0,0,0.35); }
       .room-card:nth-child(2) { animation-delay:0.08s; }
       .room-card:nth-child(3) { animation-delay:0.16s; }
