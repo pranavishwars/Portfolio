@@ -204,4 +204,4 @@ async function markHireInquiryRead(id) {
   await HireInquiry.findByIdAndUpdate(id, { read: true });
 }
 
-module.exports = { connectDB, getPortfolioData, savePortfolioData, addContactMessage, getContactMessages, addHireInquiry, getHireInquiries, markHireInquiryRead };
+module.exports = { connectDB, getPortfolioData, savePortfolioData, addContactMessage, getContactMessages, addHireInquiry, getHireInquiries, markHireInquiryRead, DEFAULT_DATA };

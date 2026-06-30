@@ -8,8 +8,9 @@ router.get('/', async (req, res) => {
     const data = await db.getPortfolioData();
     res.json({ success: true, data });
   } catch (err) {
-    console.error('Get data error:', err);
-    res.status(500).json({ success: false, error: 'Failed to retrieve portfolio data' });
+    console.error('Get data error:', err.message);
+    // Return DEFAULT_DATA if DB unavailable so the site still works
+    res.json({ success: true, data: db.DEFAULT_DATA });
   }
 });
 
