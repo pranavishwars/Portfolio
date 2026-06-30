@@ -30,23 +30,40 @@ app.use('/api/auth', authRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/hire', hireRoutes);
 
-const clientDir = path.join(__dirname, '..', 'client');
+// Detect client directory: works locally and on Vercel
+let clientDir = path.join(__dirname, '..', 'client');
+if (!fs.existsSync(clientDir)) {
+  clientDir = path.join(process.cwd(), 'client');
+}
+console.log('[server] clientDir:', clientDir);
+console.log('[server] __dirname:', __dirname);
+console.log('[server] cwd:', process.cwd());
+console.log('[server] clientDir exists:', fs.existsSync(clientDir));
+
 app.use(express.static(clientDir));
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API route not found' });
   }
-  res.sendFile(path.join(clientDir, 'index.html'));
+  const indexPath = path.join(clientDir, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('index.html not found at ' + indexPath);
+  }
 });
 
 connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  const isVercel = !!process.env.VERCEL;
+  if (!isVercel) {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
 }).catch(err => {
   console.error('Failed to connect to MongoDB:', err.message);
-  process.exit(1);
+  if (!process.env.VERCEL) process.exit(1);
 });
 
 module.exports = app;
