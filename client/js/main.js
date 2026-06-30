@@ -151,6 +151,32 @@
     if (window.innerWidth <= 768) {
       tl.add(function () { setTimeout(dismissLanding, 4000); });
     }
+    if (typeof dataReady === 'function') {
+      dataReady().then(function (apiData) {
+        if (!apiData) return;
+        var ap = apiData.personal || {};
+        var nameEl = document.getElementById('landingName');
+        if (nameEl && ap.firstName && ap.lastName && nameEl.innerHTML.indexOf(ap.firstName) === -1) {
+          nameEl.innerHTML = ap.firstName + ' <span>' + ap.lastName + '</span>';
+        }
+        var greetingEl = document.getElementById('landingGreeting');
+        if (greetingEl && ap.greeting) greetingEl.textContent = ap.greeting;
+        var titleEl = document.getElementById('landingTitle');
+        if (titleEl && ap.heroSubtitle) titleEl.textContent = ap.heroSubtitle;
+        var statsEl = document.getElementById('landingStats');
+        if (statsEl && ap.stats && ap.stats.length && !statsEl.querySelector('.landing-stat-num')) {
+          statsEl.innerHTML = ap.stats.map(function (s) {
+            return '<div class="landing-stat"><div class="landing-stat-num">' + s.number + '</div><div class="landing-stat-lbl">' + s.label + '</div></div>';
+          }).join('');
+        }
+        var photoEl = document.getElementById('landingPhoto');
+        if (photoEl && ap.photo) photoEl.src = ap.photo;
+      });
+    }
+
+    if (window.innerWidth <= 768) {
+      tl.add(function () { setTimeout(dismissLanding, 4000); });
+    }
     armLandingDismissKey();
     document.querySelector('.landing-prompt')?.addEventListener('click', dismissLanding);
   }

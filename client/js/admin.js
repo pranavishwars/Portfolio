@@ -566,3 +566,9 @@ function escapeHtml(str) {
 }
 
 loadDataAndInit();
+
+window.addEventListener('portfolio-data-ready', function (e) {
+  if (!e.detail) return;
+  currentPortfolioData = e.detail;
+  renderAllControlCorePanels();
+});

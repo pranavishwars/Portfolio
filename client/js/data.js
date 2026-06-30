@@ -115,41 +115,39 @@ let dataPromise = null;
 
 function getData() {
   if (cachedData) {
-    console.log('[data] getData returning cached');
     return cachedData;
   }
 
   if (!dataPromise) {
-    console.log('[data] getData: starting fetch to ' + API_BASE + '/data');
     dataPromise = fetch(API_BASE + '/data', {
       headers: {
         'Authorization': 'Bearer ' + (getAdminToken() || '')
       }
     })
-      .then(res => {
-        console.log('[data] fetch response status:', res.status);
+      .then(function (res) {
         if (!res.ok) throw new Error('API unavailable (status ' + res.status + ')');
         return res.json();
       })
-      .then(json => {
-        console.log('[data] fetch response json success:', json.success, 'has data:', !!json.data);
+      .then(function (json) {
         if (json.success && json.data) {
           cachedData = deepMerge(clone(DEFAULT_DATA), json.data);
-          console.log('[data] cachedData set from API, keys:', Object.keys(cachedData));
+          window.dispatchEvent(new CustomEvent('portfolio-data-ready', { detail: cachedData }));
           return cachedData;
         }
         throw new Error('Invalid response');
       })
-      .catch(err => {
-        console.log('[data] getData fetch failed:', err.message);
+      .catch(function (err) {
         cachedData = getLocalFallback();
-        console.log('[data] fallback data keys:', Object.keys(cachedData));
+        window.dispatchEvent(new CustomEvent('portfolio-data-ready', { detail: cachedData }));
         return cachedData;
       });
   }
 
-  console.log('[data] getData returning local fallback');
   return getLocalFallback();
+}
+
+function dataReady() {
+  return dataPromise || Promise.resolve(getLocalFallback());
 }
 
 function getLocalFallback() {
@@ -183,7 +181,11 @@ function saveData(data) {
       'Authorization': 'Bearer ' + token
     },
     body: JSON.stringify({ data })
-  }).catch(function () {});
+  }).then(function (res) {
+    if (!res.ok) console.error('[data] PUT failed:', res.status);
+  }).catch(function (err) {
+    console.error('[data] PUT error:', err);
+  });
 
   return true;
 }
@@ -218,4 +220,4 @@ function deepMerge(target, source) {
   return result;
 }
 
-window.__portfolioDataCache = { getData: getData, saveData: saveData, resetData: resetData, getDefaultData: getDefaultData };
+window.__portfolioDataCache = { getData: getData, saveData: saveData, resetData: resetData, getDefaultData: getDefaultData, dataReady: dataReady };
