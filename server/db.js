@@ -136,6 +136,8 @@ const DEFAULT_DATA = {
   }
 };
 
+let _dbPromise = null;
+
 async function connectDB() {
   if (mongoose.connection.readyState === 1) return;
   if (!MONGODB_URI) {
@@ -151,12 +153,25 @@ async function connectDB() {
   }
 }
 
+async function ensureDB() {
+  if (mongoose.connection.readyState === 1) return;
+  if (!_dbPromise) {
+    _dbPromise = connectDB().catch(function (err) {
+      _dbPromise = null;
+      throw err;
+    });
+  }
+  await _dbPromise;
+}
+
 async function getPortfolioData() {
+  await ensureDB();
   const doc = await Portfolio.findOne({ key: 'main' });
   return doc ? doc.data : DEFAULT_DATA;
 }
 
 async function savePortfolioData(data) {
+  await ensureDB();
   await Portfolio.updateOne(
     { key: 'main' },
     { $set: { data } },
@@ -165,22 +180,27 @@ async function savePortfolioData(data) {
 }
 
 async function addContactMessage(name, email, message) {
+  await ensureDB();
   await ContactMessage.create({ name, email, message });
 }
 
 async function getContactMessages() {
+  await ensureDB();
   return ContactMessage.find().sort({ createdAt: -1 }).lean();
 }
 
 async function addHireInquiry(name, email, phone, service, description) {
+  await ensureDB();
   await HireInquiry.create({ name, email, phone, service, description });
 }
 
 async function getHireInquiries() {
+  await ensureDB();
   return HireInquiry.find().sort({ createdAt: -1 }).lean();
 }
 
 async function markHireInquiryRead(id) {
+  await ensureDB();
   await HireInquiry.findByIdAndUpdate(id, { read: true });
 }
 

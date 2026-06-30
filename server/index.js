@@ -54,16 +54,16 @@ app.get('*', (req, res) => {
   }
 });
 
-connectDB().then(() => {
-  const isVercel = !!process.env.VERCEL;
-  if (!isVercel) {
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  }
-}).catch(err => {
-  console.error('Failed to connect to MongoDB:', err.message);
-  if (!process.env.VERCEL) process.exit(1);
+connectDB().then(function () {
+  console.log('[server] MongoDB connected');
+}).catch(function (err) {
+  console.error('[server] Initial DB connect failed:', err.message);
 });
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, function () {
+    console.log('[server] Local dev on http://localhost:' + PORT);
+  });
+}
 
 module.exports = app;
