@@ -164,7 +164,7 @@
         var titleEl = document.getElementById('landingTitle');
         if (titleEl && ap.heroSubtitle) titleEl.textContent = ap.heroSubtitle;
         var statsEl = document.getElementById('landingStats');
-        if (statsEl && ap.stats && ap.stats.length && !statsEl.querySelector('.landing-stat-num')) {
+        if (statsEl && ap.stats && ap.stats.length) {
           statsEl.innerHTML = ap.stats.map(function (s) {
             return '<div class="landing-stat"><div class="landing-stat-num">' + s.number + '</div><div class="landing-stat-lbl">' + s.label + '</div></div>';
           }).join('');
