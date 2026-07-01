@@ -1432,7 +1432,7 @@
     const projects = data.projects || [];
     if (!projects.length) { addCard(body, '<div style="color:rgba(255,255,255,0.4);text-align:center;padding:20px;">No projects yet.</div>', hex, '0s'); return; }
     const grid = document.createElement('div');
-    grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:18px;';
+    grid.style.cssText = window.innerWidth <= 768 ? 'display:grid;grid-template-columns:1fr;gap:14px;' : 'display:grid;grid-template-columns:repeat(3,1fr);gap:18px;';
     projects.forEach((p, i) => {
       const tagsHtml = (p.tags||[]).map(t => `<span class="tag-pill" style="color:${hex};border-color:${hex}44;">${esc(t)}</span>`).join('');
       const card = document.createElement('div');
