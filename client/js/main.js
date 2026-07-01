@@ -1794,6 +1794,25 @@
     }
   };
 
+  window.addEventListener('portfolio-data-ready', function () {
+    if (isInsideRoom && activeRoomIndex >= 0) {
+      var ov = document.getElementById('room-overlay');
+      if (ov) {
+        var body = ov.querySelector('.room-overlay-body');
+        if (body) {
+          var cfg = ROOM_CONFIGS[activeRoomIndex];
+          body.innerHTML = '';
+          var hexColor = '#' + cfg.color.toString(16).padStart(6, '0');
+          var headerCard = document.createElement('div');
+          headerCard.style.cssText = 'background:rgba(7,6,14,0.78);border:1px solid ' + hexColor + '55;border-radius:8px;padding:28px 32px;display:flex;align-items:center;gap:20px;animation:cardSlideUp 0.4s cubic-bezier(0.25,0.8,0.25,1) both;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 12px 30px rgba(0,0,0,0.4);';
+          headerCard.innerHTML = '<div style="font-size:2.8rem;line-height:1;">' + cfg.icon + '</div><div><div style="font-family:\'Cinzel\',serif;font-size:1.4rem;color:#f3f3f6;letter-spacing:1px;">' + cfg.name + '</div><div style="font-size:0.75rem;color:' + hexColor + ';text-transform:uppercase;letter-spacing:2px;margin-top:4px;">' + cfg.label + '</div></div>';
+          body.appendChild(headerCard);
+          injectContentForRoom(cfg, body, hexColor);
+        }
+      }
+    }
+  });
+
   window.viewportEngine.enterRoom = enterCurrentRoom;
   window.viewportEngine.exitRoom = exitRoom;
   window.viewportEngine.navigateToSection = navigateToSection;

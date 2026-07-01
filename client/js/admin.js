@@ -115,8 +115,12 @@ function renderAllControlCorePanels() {
 }
 
 function commitDataToSystemStorage() {
-  if (typeof saveData === 'function') {
-    alert(saveData(currentPortfolioData) ? 'Data saved successfully.' : 'Error saving data.');
+  if (typeof saveData !== 'function') return;
+  var result = saveData(currentPortfolioData);
+  if (result && typeof result.then === 'function') {
+    result.then(function (ok) {
+      alert(ok ? 'Data saved successfully.' : 'Error saving data. Server may be unavailable.');
+    });
   }
 }
 
@@ -483,10 +487,16 @@ function importPortfolioData(event) {
     try {
       const imported = JSON.parse(e.target.result);
       if (typeof saveData === 'function') {
-        saveData(imported);
-        currentPortfolioData = typeof getData === 'function' ? getData() : imported;
+        currentPortfolioData = imported;
+        var result = saveData(imported);
         renderAllControlCorePanels();
-        alert('Data imported successfully.');
+        if (result && typeof result.then === 'function') {
+          result.then(function (ok) {
+            alert(ok ? 'Data imported and saved.' : 'Imported locally. Server save failed.');
+          });
+        } else {
+          alert('Data imported successfully.');
+        }
       }
     } catch (err) {
       alert('Error parsing JSON file.');

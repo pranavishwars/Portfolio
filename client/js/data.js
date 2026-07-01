@@ -171,10 +171,10 @@ function saveData(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (e) {}
 
-  const token = getAdminToken();
-  if (!token) return false;
+  var token = getAdminToken();
+  if (!token) { return Promise.resolve(false); }
 
-  fetch(API_BASE + '/data', {
+  return fetch(API_BASE + '/data', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -182,12 +182,15 @@ function saveData(data) {
     },
     body: JSON.stringify({ data })
   }).then(function (res) {
-    if (!res.ok) console.error('[data] PUT failed:', res.status);
+    if (!res.ok) throw new Error('Server returned ' + res.status);
+    return res.json();
+  }).then(function (json) {
+    if (!json.success) throw new Error(json.error || 'Save failed');
+    return true;
   }).catch(function (err) {
-    console.error('[data] PUT error:', err);
+    console.error('[data] PUT error:', err.message || err);
+    return false;
   });
-
-  return true;
 }
 
 function resetData() {
