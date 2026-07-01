@@ -43,10 +43,11 @@ function initIdentityFormHandler() {
   document.getElementById('i-subtitle').value = p.heroSubtitle || '';
   form.addEventListener('submit', e => {
     e.preventDefault();
-    p.firstName = document.getElementById('i-firstName').value.trim();
-    p.lastName = document.getElementById('i-lastName').value.trim();
-    p.greeting = document.getElementById('i-greeting').value.trim();
-    p.heroSubtitle = document.getElementById('i-subtitle').value.trim();
+    var p2 = currentPortfolioData.personal;
+    p2.firstName = document.getElementById('i-firstName').value.trim();
+    p2.lastName = document.getElementById('i-lastName').value.trim();
+    p2.greeting = document.getElementById('i-greeting').value.trim();
+    p2.heroSubtitle = document.getElementById('i-subtitle').value.trim();
     commitDataToSystemStorage();
   });
 }
@@ -82,9 +83,10 @@ function initCommsFormHandler() {
   document.getElementById('c-availability').value = c.availability || '';
   form.addEventListener('submit', e => {
     e.preventDefault();
-    c.email = document.getElementById('c-email').value.trim();
-    c.location = document.getElementById('c-location').value.trim();
-    c.availability = document.getElementById('c-availability').value.trim();
+    var c2 = currentPortfolioData.contact;
+    c2.email = document.getElementById('c-email').value.trim();
+    c2.location = document.getElementById('c-location').value.trim();
+    c2.availability = document.getElementById('c-availability').value.trim();
     commitDataToSystemStorage();
   });
 }

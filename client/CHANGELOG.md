@@ -82,6 +82,44 @@ If MongoDB is unreachable (unset env vars, network issue, Atlas whitelist), the 
 
 ---
 
+## Admin Data Not Persisting on Refresh
+
+### Problem
+After saving changes on the admin page, data appeared correct while the page was open. On page refresh, the form showed default data instead of the saved values — even though `saveData()` correctly wrote to localStorage.
+
+### Root Cause
+`admin.js` has two form handler functions (`initIdentityFormHandler`, `initCommsFormHandler`) that capture references to `currentPortfolioData.personal` / `currentPortfolioData.contact` in closures at setup time:
+
+```js
+const p = currentPortfolioData.personal;  // captured at init time
+form.addEventListener('submit', e => {
+    p.firstName = formValue;       // modifies the OLD object
+    commitDataToSystemStorage();   // saves currentPortfolioData (the NEW object)
+});
+```
+
+The `portfolio-data-ready` event (dispatched when async API fetch completes) silently overwrites `currentPortfolioData` with fresh server data. After that point:
+- The submit handler modifies the closure's old `personal`/`contact` objects
+- `commitDataToSystemStorage()` saves `currentPortfolioData` (the new, unmodified object from the event)
+- The admin's edits are written to a stale object that is never saved
+
+### Fix
+**`client/js/admin.js`** — At submit time, re-fetch the reference from `currentPortfolioData` instead of using the closure variable:
+
+```js
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    var p2 = currentPortfolioData.personal;  // always the latest ref
+    p2.firstName = document.getElementById('i-firstName').value.trim();
+    ...
+    commitDataToSystemStorage();
+});
+```
+
+Same fix for `initCommsFormHandler` using `currentPortfolioData.contact`.
+
+---
+
 ## Deployment
 
 - All changes pushed to `main` on GitHub
